@@ -45,3 +45,11 @@ class DBOperationsService:
         print(str(limit) + ' najpopularniejszych miast:')
         for res in result:
             print(res[0] + ': ' + str(res[1]))
+
+    def most_common_passwords(self, limit: int):
+        self.cur.execute('SELECT password, COUNT(password) as cnt FROM personLogin'
+                         ' GROUP BY password order by cnt desc LIMIT ' + str(limit))
+        result = self.cur.fetchall()
+        print(str(limit) + ' najpopularniejszych hasel:')
+        for res in result:
+            print(res[0] + ': ' + str(res[1]))
