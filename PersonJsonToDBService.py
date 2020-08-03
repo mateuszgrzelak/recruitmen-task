@@ -1,5 +1,6 @@
 import sqlite3
 import calendar
+import json
 from datetime import datetime
 
 
@@ -99,6 +100,61 @@ class PersonJsonToDBService:
                       value text
                      )''')
         self.conn.commit()
+
+    def insert_data_to_tables(self, file_name="persons.json"):
+        with open(file_name, encoding="utf8") as person_file:
+            data = json.load(person_file)
+            for d in data['results']:
+                date_of_birth = d['dob']['date'][:10]  # Format 2016-08-11
+                dtb = days_to_birthday(int(date_of_birth[5:7]), int(date_of_birth[8:10]))
+                phone_number = clean_phone_number_from_special_character(d['phone'])
+                self.c.execute('''
+                INSERT INTO person(gender,email,phone,cell,nat,daysToBirthday)
+                VALUES(?,?,?,?,?,?)
+                ''', (d['gender'], d['email'], phone_number, d['cell'], d['nat'], dtb))
+                self.c.execute('''
+                INSERT INTO personName(title, first, last)
+                VALUES(?,?,?)
+                ''', (d['name']['title'], d['name']['first'], d['name']['last']))
+                self.c.execute('''
+                INSERT INTO personLocation(city, state, country, postcode)
+                VALUES(?,?,?,?)
+                ''', (
+                    d['location']['city'], d['location']['state'],
+                    d['location']['country'], d['location']['postcode'])
+                               )
+                self.c.execute('''
+                INSERT INTO personLocationStreet(number, name)
+                VALUES(?,?)
+                ''', (d['location']['street']['number'], d['location']['street']['name']))
+                self.c.execute('''
+                INSERT INTO personLocationCoordinates(latitude, longitude)
+                VALUES(?,?)
+                ''', (d['location']['coordinates']['latitude'], d['location']['coordinates']['longitude']))
+                self.c.execute('''
+                INSERT INTO personLocationTimezone(offset, description)
+                VALUES(?,?)
+                ''', (d['location']['timezone']['offset'], d['location']['timezone']['description']))
+                self.c.execute('''
+                INSERT INTO personLogin(uuid, username, password, salt, md5, sha1, sha256)
+                VALUES(?,?,?,?,?,?,?)
+                ''', (
+                    d['login']['uuid'], d['login']['username'], d['login']['password'], d['login']['salt'],
+                    d['login']['md5'],
+                    d['login']['sha1'], d['login']['sha256']))
+                self.c.execute('''
+                INSERT INTO personDOB(date, age)
+                VALUES(?,?)
+                ''', (d['dob']['date'], d['dob']['age']))
+                self.c.execute('''
+                INSERT INTO personRegistered(date, age)
+                VALUES(?,?)
+                ''', (d['registered']['date'], d['registered']['age']))
+                self.c.execute('''
+                INSERT INTO personId(name, value)
+                VALUES(?,?)
+                ''', (d['id']['name'], d['id']['value']))
+                self.conn.commit()
 
     def close_connection(self):
         self.conn.close()
