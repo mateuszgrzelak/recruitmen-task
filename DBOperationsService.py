@@ -37,3 +37,11 @@ class DBOperationsService:
                          ' person WHERE person.gender="female" AND person.id=personDOB.id')
         average_age_woman = self.cur.fetchall()[0][0]
         print('Srednia wieku kobiet: ' + str(int(average_age_woman)))
+
+    def most_popular_cities(self, limit: int):
+        self.cur.execute('SELECT city, COUNT(city) as cnt FROM personLocation'
+                         ' GROUP BY city order by cnt desc LIMIT ' + str(limit))
+        result = self.cur.fetchall()
+        print(str(limit) + ' najpopularniejszych miast:')
+        for res in result:
+            print(res[0] + ': ' + str(res[1]))
