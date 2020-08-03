@@ -18,6 +18,10 @@ def days_to_birthday(month: int, day: int):
     return bd_next_year + 1
 
 
+def clean_phone_number_from_special_character(phone_number: str):
+    return ''.join(e for e in phone_number if e.isnumeric())
+
+
 class PersonJsonToDBService:
 
     def __init__(self, db_name='data.db'):
