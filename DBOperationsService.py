@@ -53,3 +53,15 @@ class DBOperationsService:
         print(str(limit) + ' najpopularniejszych hasel:')
         for res in result:
             print(res[0] + ': ' + str(res[1]))
+
+        # d1 and d2 format is YYYY-MM-DD
+    def users_born_between_dates(self, d1, d2):
+        # first date is inclusive, but the second is exclusive, i.e. d2 is equal YYYY:MM:DD:00:00:00
+        # to prevent from being out of scope added following modification
+        d2buff = d2 + 'T23:59:59.999Z'
+        self.cur.execute("SELECT username FROM personLogin, personDOB WHERE personDOB.date >= '" + d1 + "'"
+                        " and personDOB.date <= '" + d2buff + "'and personDOB.id = personLogin.id")
+        result = self.cur.fetchall()
+        print('Uzytkownicy urodzeni pomiędzy ' + d1 + ' oraz ' + d2 + ': ')
+        for res in result:
+            print(res[0])
