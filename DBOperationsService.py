@@ -1,6 +1,33 @@
 import sqlite3
 
 
+def get_points_for_password(password):
+    special_characters = [" ", "!", "\"", "#", "$", "%", "&", "\'", "(", ")", "*", "+",
+                          ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[",
+                          "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
+    points = 0
+    one_lower_letter = False
+    one_capital_letter = False
+    one_digit = False
+    special_char = False
+    for ch in password:
+        if not one_lower_letter and ch.islower():
+            points += 1
+            one_lower_letter = True
+        elif not one_capital_letter and ch.isupper():
+            points += 2
+            one_capital_letter = True
+        elif not one_digit and ch.isdigit():
+            points += 1
+            one_digit = True
+        elif not special_char and ch in special_characters:
+            points += 3
+            special_char = True
+    if len(password) >= 8:
+        points += 5
+    return points
+
+
 class DBOperationsService:
 
     def __init__(self, db_name='data.db'):
@@ -65,3 +92,20 @@ class DBOperationsService:
         print('Uzytkownicy urodzeni pomiędzy ' + d1 + ' oraz ' + d2 + ': ')
         for res in result:
             print(res[0])
+
+    def most_secure_password(self):
+        self.cur.execute('SELECT password FROM personLogin')
+        result = self.cur.fetchall()
+        max_points = 0
+        most_secure_passwords = []
+        for res in result:
+            password = res[0]
+            points_for_password = get_points_for_password(password)
+            if points_for_password == max_points:
+                most_secure_passwords.append(password)
+            elif points_for_password > max_points:
+                max_points = points_for_password
+                most_secure_passwords = [password, ]
+
+        print('Hasla ktore zdobyly najwiecej punktow za bezpieczenstwo:')
+        print(most_secure_passwords)
