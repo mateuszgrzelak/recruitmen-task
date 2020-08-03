@@ -1,4 +1,21 @@
 import sqlite3
+import calendar
+from datetime import datetime
+
+
+def days_to_birthday(month: int, day: int):
+    day_buff = day
+    if not calendar.isleap(datetime.now().year) and month == 2 and day_buff == 29:
+        day = 28
+    delta1 = datetime(datetime.now().year, month, day)
+    bd_this_year = (delta1 - datetime.now()).days
+    if bd_this_year >= -1:
+        return bd_this_year + 1
+    if not calendar.isleap(datetime.now().year + 1) and month == 2 and day_buff == 29:
+        day = 28
+    delta2 = datetime(datetime.now().year + 1, month, day)
+    bd_next_year = (delta2 - datetime.now()).days
+    return bd_next_year + 1
 
 
 class PersonJsonToDBService:
