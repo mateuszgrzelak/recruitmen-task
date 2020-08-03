@@ -109,3 +109,6 @@ class DBOperationsService:
 
         print('Hasla ktore zdobyly najwiecej punktow za bezpieczenstwo:')
         print(most_secure_passwords)
+
+    def close_connection(self):
+        self.conn.close()
