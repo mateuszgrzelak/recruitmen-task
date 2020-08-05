@@ -83,7 +83,7 @@ class PersonJsonToDBService:
                      )''')
         self.__conn.commit()
 
-    def __days_to_birthday(self, month: int, day: int):
+    def __days_to_birthday(self, month: int, day: int) -> int:
         day_buff = day
         if not calendar.isleap(datetime.now().year) and month == 2 and day_buff == 29:
             day = 28
@@ -100,7 +100,7 @@ class PersonJsonToDBService:
     def __clean_phone_number_from_special_character(self, phone_number: str):
         return ''.join(e for e in phone_number if e.isnumeric())
 
-    def __insert_data_to_tables(self, number):
+    def __insert_data_to_tables(self, number: int):
         json_data = requests.get('https://randomuser.me/api/?results='+str(number)).text
         data = json.loads(json_data)
         for d in data['results']:
@@ -155,7 +155,7 @@ class PersonJsonToDBService:
             ''', (d['id']['name'], d['id']['value']))
             self.__conn.commit()
 
-    def convert_to_database(self, number_persons):
+    def convert_to_database(self, number_persons: int):
         '''
         :param number_persons: number of persons taken from external api
         :return:
