@@ -1,5 +1,5 @@
 import sqlite3
-
+import re
 
 class DBOperationsService:
 
@@ -59,8 +59,11 @@ class DBOperationsService:
         '''
         # first date is inclusive, but the second is exclusive, i.e. d2 is equal YYYY:MM:DD:00:00:00
         # to prevent from being out of scope added following modification
+        pattern = re.compile(r'^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$')
+        if not pattern.match(d1) or not pattern.match(d2):
+            raise Exception('Wrong data format')
         d2buff = d2 + 'T23:59:59.999Z'
-        self.__cur.execute("SELECT username FROM personLogin, personDOB WHERE personDOB.date >= '" + d1 + "'"
+        self.__cur.execute("SELECT username, date FROM personLogin, personDOB WHERE personDOB.date >= '" + d1 + "'"
                           " and personDOB.date <= '" + d2buff + "'and personDOB.id = personLogin.id")
         result = self.__cur.fetchall()
         return result
