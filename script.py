@@ -74,31 +74,41 @@ def average_age(gender: str):
 
 def most_common_cities(limit: int):
     service = DBOperationsService.DBOperationsService()
-    print(str(limit)+' most popular cities: ')
+    print()
+    print(str(limit)+' most popular cities: \n')
+    print('NAME{:>16} OCCURRENCES'.format('|'))
+    print('-'*32)
     for city, occurrence in service.most_common_cities(limit):
-        print('City: ' + city+', occurrences: '+str(occurrence))
+        # print('City: ' + city+', occurrences: '+str(occurrence))
+        print('{:19}| {:^11}'.format(city, str(occurrence)))
     service.close_connection()
 
 
 def most_common_pass(limit: int):
     service = DBOperationsService.DBOperationsService()
-    print(str(limit)+' most popular passwords:')
+    print()
+    print(str(limit) + ' most popular passwords: \n')
+    print('PASSWORD{:>16} OCCURRENCES'.format('|'))
+    print('-' * 32)
     for password, occurrence in service.most_common_passwords(limit):
-        print('Password: ' + password + ', occurrences: ' + str(occurrence))
+        print('{:19}| {:^11}'.format(password, str(occurrence)))
     service.close_connection()
 
 
 def users_born_between_dates(d1: str, d2: str):
     service = DBOperationsService.DBOperationsService()
-    print('Users born between '+d1+' and '+d2+':')
-    for username in service.users_born_between_dates(d1, d2):
-        print(username[0])
+    print()
+    print('Users born between '+d1+' and '+d2+':\n')
+    print('USERNAME{:>16} DATE OF BIRTH'.format('|'))
+    print('-' * 38)
+    for username, dob in service.users_born_between_dates(d1, d2):
+        print('{:23}| {:^13}'.format(username, dob[:10]))
     service.close_connection()
 
 
 def most_secure_pass():
     service = DBOperationsService.DBOperationsService()
-    print('The most secure passwords:')
+    print('\nThe most secure passwords:\n')
     for password in service.most_secure_password():
         print(password)
     service.close_connection()
