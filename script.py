@@ -1,17 +1,18 @@
 import click
 import PersonJsonToDBService
 import DBOperationsService
+import PersonRepository
 
 
 @click.command()
-@click.option('--load-to-db', '-ltdb', 'ltdb', type=int,
-              help='Create .db file from json file. The argument specifies how '
-                   'many people should be created in database.')
-@click.option('--percentage', '-p', 'p',
+@click.option('--load-random-users', '-lru', 'lru', type=int,
+              help='Create .db file. The argument specifies how '
+                   'many data about people should be created in database.')
+@click.option('--gender-percentage', '-gp', 'gp',
               type=click.Choice(['male', 'female'], case_sensitive=False),
               help='Get percentage of men or women.')
 @click.option('--average-age', '-aa', 'aa',
-              type=click.Choice(['male', 'female', 'generally'], case_sensitive=False),
+              type=click.Choice(['male', 'female', 'all'], case_sensitive=False),
               help='Get average age of men, women or men+women.')
 @click.option('--most-common-cities', '-mcc', 'mcc', type=int,
               help='Get [number] most common cities.')
@@ -22,17 +23,17 @@ import DBOperationsService
                    'Arguments should be in format YYYY-MM-DD.')
 @click.option('--most-secure-pass', '-msp', 'msp', is_flag=True,
               help='Get the most secure passwords using a specific ranking.')
-def hello(ltdb, p, aa, mcc, mcp, ubbd, msp):
+def hello(lru, gp, aa, mcc, mcp, ubbd, msp):
     '''
     My solution of the recruitment task.
     People data is taken from external api https://randomuser.me/.
     First you need to create db using argument -ltdb [number of people taken].
     Then you can perform the operations listed below. In folder where project is located data.db file will be created
     '''
-    if ltdb is not None:
-        load_to_db(ltdb)
-    if p is not None:
-        percentage(p)
+    if lru is not None:
+        load_random_users(lru)
+    if gp is not None:
+        gender_percentage(gp)
     if aa is not None:
         average_age(aa)
     if mcc is not None:
@@ -45,15 +46,21 @@ def hello(ltdb, p, aa, mcc, mcp, ubbd, msp):
         most_secure_pass()
 
 
-def load_to_db(number: int):
+def load_random_users(number: int):
+    if number < 0:
+        print('Argument must be greater than 0')
+        return
     pjtdb = PersonJsonToDBService.PersonJsonToDBService()
     pjtdb.convert_to_database(number)
     print('Converted data from .json to .db format.\nCreated '
           'tables with data about '+str(number)+' persons')
 
 
-def percentage(gender: str):
-    service = DBOperationsService.DBOperationsService()
+repository = PersonRepository.PersonRepository()
+service = DBOperationsService.DBOperationsService(repository)
+
+
+def gender_percentage(gender: str):
     if gender == 'male':
         print('Percentage of men: '+str(service.percentage_men())+'%')
     elif gender == 'female':
@@ -62,20 +69,20 @@ def percentage(gender: str):
 
 
 def average_age(gender: str):
-    service = DBOperationsService.DBOperationsService()
     if gender == 'male':
         print('The average age of men: ' + str(service.average_age_male()))
     elif gender == 'female':
         print('The average age of women: ' + str(service.average_age_female()))
-    elif gender == 'generally':
-        print('The average age of men and women: ' + str(service.average_age_generally()))
+    elif gender == 'all':
+        print('The average age of men and women: ' + str(service.average_age_all()))
     service.close_connection()
 
 
 def most_common_cities(limit: int):
-    service = DBOperationsService.DBOperationsService()
-    print()
-    print(str(limit)+' most popular cities: \n')
+    if limit < 0:
+        print('Argument must be greater than 0')
+        return
+    print('n'+str(limit)+' most popular cities: \n')
     print('NAME{:>16} OCCURRENCES'.format('|'))
     print('-'*32)
     for city, occurrence in service.most_common_cities(limit):
@@ -85,10 +92,11 @@ def most_common_cities(limit: int):
 
 
 def most_common_pass(limit: int):
-    service = DBOperationsService.DBOperationsService()
-    print()
-    print(str(limit) + ' most popular passwords: \n')
-    print('PASSWORD{:>16} OCCURRENCES'.format('|'))
+    if limit < 0:
+        print('Argument must be greater than 0')
+        return
+    print('n'+str(limit) + ' most popular passwords: \n')
+    print('PASSWORD{:>12} OCCURRENCES'.format('|'))
     print('-' * 32)
     for password, occurrence in service.most_common_passwords(limit):
         print('{:19}| {:^11}'.format(password, str(occurrence)))
@@ -96,9 +104,7 @@ def most_common_pass(limit: int):
 
 
 def users_born_between_dates(d1: str, d2: str):
-    service = DBOperationsService.DBOperationsService()
-    print()
-    print('Users born between '+d1+' and '+d2+':\n')
+    print('\nUsers born between '+d1+' and '+d2+':\n')
     print('USERNAME{:>16} DATE OF BIRTH'.format('|'))
     print('-' * 38)
     for username, dob in service.users_born_between_dates(d1, d2):
@@ -107,7 +113,6 @@ def users_born_between_dates(d1: str, d2: str):
 
 
 def most_secure_pass():
-    service = DBOperationsService.DBOperationsService()
     print('\nThe most secure passwords:\n')
     for password in service.most_secure_password():
         print(password)

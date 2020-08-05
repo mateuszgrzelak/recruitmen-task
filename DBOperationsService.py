@@ -1,55 +1,43 @@
-import sqlite3
 import re
+from datetime import datetime
+
+from PersonRepository import PersonRepository
+
 
 class DBOperationsService:
 
-    def __init__(self, db_name='data.db'):
-        self.__conn = sqlite3.connect(db_name)
-        self.__cur = self.__conn.cursor()
-
-    def __get_number_men_women(self) -> (int, int):
-        self.__cur.execute('SELECT COUNT(*) FROM person WHERE gender="male"')
-        number_men = self.__cur.fetchall()[0][0]
-        self.__cur.execute('SELECT COUNT(*) FROM person WHERE gender="female"')
-        number_women = self.__cur.fetchall()[0][0]
-        return number_men, number_women
+    def __init__(self, repository: 'PersonRepository'):
+        self.__repository = repository
 
     def percentage_women(self) -> int:
-        number_men, number_women = self.__get_number_men_women()
+        number_men, number_women = self.__repository.get_number_men_women()
         return number_women / (number_men + number_women) * 100
 
     def percentage_men(self) -> int:
-        number_men, number_women = self.__get_number_men_women()
+        number_men, number_women = self.__repository.get_number_men_women()
         return number_men / (number_men + number_women) * 100
 
-    def average_age_generally(self) -> int:
-        self.__cur.execute('SELECT AVG(age) FROM personDOB')
-        average_age = self.__cur.fetchall()[0][0]
-        return average_age
+    def average_age_all(self) -> int:
+        return self.__repository.get_average_age_all()
 
     def average_age_male(self) -> int:
-        self.__cur.execute('SELECT AVG(age) FROM personDOB,'
-                           ' person WHERE person.gender="male" AND person.id=personDOB.id')
-        average_age_men = self.__cur.fetchall()[0][0]
-        return average_age_men
+        return self.__repository.get_average_age_male()
 
     def average_age_female(self) -> int:
-        self.__cur.execute('SELECT AVG(age) FROM personDOB,'
-                           ' person WHERE person.gender="female" AND person.id=personDOB.id')
-        average_age_women = self.__cur.fetchall()[0][0]
-        return average_age_women
+        return self.__repository.get_average_age_female()
 
     def most_common_cities(self, limit: int) -> list:
-        self.__cur.execute('SELECT city, COUNT(city) as cnt FROM personLocation'
-                           ' GROUP BY city order by cnt desc LIMIT ' + str(limit))
-        result = self.__cur.fetchall()
-        return result
+        return self.__repository.get_most_common_cities(limit)
 
     def most_common_passwords(self, limit: int) -> list:
-        self.__cur.execute('SELECT password, COUNT(password) as cnt FROM personLogin'
-                           ' GROUP BY password order by cnt desc LIMIT ' + str(limit))
-        result = self.__cur.fetchall()
-        return result
+        return self.__repository.get_most_common_passwords(limit)
+
+    def __replace_dates_if_in_wrong_order(self, d1: str, d2: str) -> tuple:
+        t1 = datetime(int(d1[:4]), int(d1[5:7]), int(d1[8:10]))
+        t2 = datetime(int(d2[:4]), int(d2[5:7]), int(d2[8:10]))
+        if t1 > t2:
+            return d2, d1
+        return d1, d2
 
     def users_born_between_dates(self, d1: str, d2: str) -> list:
         '''
@@ -57,16 +45,14 @@ class DBOperationsService:
         :param d2: # format YYYY-MM-DD
         :return:
         '''
-        # first date is inclusive, but the second is exclusive, i.e. d2 is equal YYYY:MM:DD:00:00:00
-        # to prevent from being out of scope added following modification
         pattern = re.compile(r'^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$')
         if not pattern.match(d1) or not pattern.match(d2):
             raise Exception('Wrong data format')
-        d2buff = d2 + 'T23:59:59.999Z'
-        self.__cur.execute("SELECT username, date FROM personLogin, personDOB WHERE personDOB.date >= '" + d1 + "'"
-                          " and personDOB.date <= '" + d2buff + "'and personDOB.id = personLogin.id")
-        result = self.__cur.fetchall()
-        return result
+        d1, d2 = self.__replace_dates_if_in_wrong_order(d1, d2)
+        # first date is inclusive, but the second is exclusive, i.e. d2 is equal to YYYY:MM:DD:00:00:00
+        # to prevent from being out of scope added following modification
+        d2 = d2 + 'T23:59:59.999Z'
+        return self.__repository.get_users_born_between_dates(d1, d2)
 
     def __get_points_for_password(self, password: str) -> int:
         special_characters = [" ", "!", "\"", "#", "$", "%", "&", "\'", "(", ")", "*", "+",
@@ -95,8 +81,7 @@ class DBOperationsService:
         return points
 
     def most_secure_password(self) -> list:
-        self.__cur.execute('SELECT password FROM personLogin')
-        result = self.__cur.fetchall()
+        result = self.__repository.get_all_passwords()
         max_points = 0
         most_secure_passwords = []
         for res in result:
@@ -107,8 +92,7 @@ class DBOperationsService:
             elif points_for_password > max_points:
                 max_points = points_for_password
                 most_secure_passwords = [password, ]
-
         return most_secure_passwords
 
     def close_connection(self):
-        self.__conn.close()
+        self.__repository.close_connection()

@@ -19,27 +19,29 @@ Aby skorzystać z komend dostępnych w programie nalezy w interpreterze poleceń
 
 ## Dostępne komendy:
 
+Przed wywołaniem każdej komendy należy dodac na początku `py script.py`
+
 <table>
  <th>Komenda</th>
  <th>Skrócona wersja</th>
  <th>Parametr</th>
  <th>Opis</th>
  <tr>
-  <td>--load-to-db</td>
-  <td>-ltdb</td>
+  <td>--load-random-users</td>
+  <td>-lru</td>
   <td>Integer</td>
   <td>Pobiera dane z API i zapisuje do bazy danych o nazwie<i> data.db</i></td>
  <tr>
  <tr>
-  <td>--percentage</td>
-  <td>-p</td>
+  <td>--gender-percentage</td>
+  <td>-gp</td>
   <td>[male|female]</td>
   <td>Wyświetla procent kobiet lub mężczyzn</td>
  <tr>
  <tr>
   <td>--average-age</td>
   <td>-aa</td>
-  <td>[male|female|generally]</td>
+  <td>[male|female|all]</td>
   <td>Wyświetla procent kobiet lub mężczyzn</td>
  <tr>
  <tr>
@@ -67,8 +69,6 @@ Aby skorzystać z komend dostępnych w programie nalezy w interpreterze poleceń
   <td>Zwraca najbezpieczniejsze hasło wyliczone na podstawie określonego rankingu </td>
  <tr>
 </table>
-
-Przed wywołaniem każdej komendy należy dodac na początku `py script.py`
 
 ## Testy
 
