@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-
 from PersonRepository import PersonRepository
 
 
@@ -9,21 +8,21 @@ class DBOperationsService:
     def __init__(self, repository: 'PersonRepository'):
         self.__repository = repository
 
-    def percentage_women(self) -> int:
+    def percentage_women(self) -> float:
         number_men, number_women = self.__repository.get_number_men_women()
         return number_women / (number_men + number_women) * 100
 
-    def percentage_men(self) -> int:
+    def percentage_men(self) -> float:
         number_men, number_women = self.__repository.get_number_men_women()
         return number_men / (number_men + number_women) * 100
 
-    def average_age_all(self) -> int:
+    def average_age_all(self) -> float:
         return self.__repository.get_average_age_all()
 
-    def average_age_male(self) -> int:
+    def average_age_male(self) -> float:
         return self.__repository.get_average_age_male()
 
-    def average_age_female(self) -> int:
+    def average_age_female(self) -> float:
         return self.__repository.get_average_age_female()
 
     def most_common_cities(self, limit: int) -> list:
@@ -40,14 +39,14 @@ class DBOperationsService:
         return d1, d2
 
     def users_born_between_dates(self, d1: str, d2: str) -> list:
-        '''
+        """
         :param d1: # format YYYY-MM-DD
         :param d2: # format YYYY-MM-DD
         :return:
-        '''
+        """
         pattern = re.compile(r'^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$')
         if not pattern.match(d1) or not pattern.match(d2):
-            raise Exception('Wrong data format')
+            raise Exception('Invalid date format')
         d1, d2 = self.__replace_dates_if_in_wrong_order(d1, d2)
         # first date is inclusive, but the second is exclusive, i.e. d2 is equal to YYYY:MM:DD:00:00:00
         # to prevent from being out of scope added following modification
@@ -93,6 +92,3 @@ class DBOperationsService:
                 max_points = points_for_password
                 most_secure_passwords = [password, ]
         return most_secure_passwords
-
-    def close_connection(self):
-        self.__repository.close_connection()

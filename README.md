@@ -36,13 +36,13 @@ Przed wywołaniem każdej komendy należy dodac na początku `py script.py`
   <td>--gender-percentage</td>
   <td>-gp</td>
   <td>[male|female]</td>
-  <td>Wyświetla procent kobiet lub mężczyzn</td>
+  <td>Wyświetla procent mężczyzn lub kobiet</td>
  <tr>
  <tr>
   <td>--average-age</td>
   <td>-aa</td>
   <td>[male|female|all]</td>
-  <td>Wyświetla procent kobiet lub mężczyzn</td>
+  <td>Wyświetla średni wiek mężczyzn, kobiet lub kobiet+mężczyzn</td>
  <tr>
  <tr>
   <td>--most-common-cities</td>
@@ -79,8 +79,8 @@ py -m pytest
 
 ## Zalożenia
 
-W trakcie pisania programu pojawiły się następujące pytania, jednak ze względu że jest to "tylko" zadanie rekrutacyjne postanowiłem nie zabierać czasu rekruterom:
+W trakcie pisania programu pojawiły się następujące pytania, jednak ze względu, że jest to "tylko" zadanie rekrutacyjne postanowiłem nie zabierać czasu rekruterom:
 
 - W jakim języku powinien być interfejs poleceń. Wybrałem język angielski
 - Czy osoba urodzona 29 lutego w roku przestępnym obchodzi urodziny w roku, który nie jest przestępny 28 lutego czy 1 marca, czy może obchodzi urodziny co 4 lata. Obliczając ilość dni do urodzin założyłem że obchodzi je 28 lutego.
-- W przypadku gdy ilośc wystąpień najbardziej popularnych miast lub hasel jest wieksza niz podany argument ograniczający ich ilość, jaką formę sortowania zastosować.
+- W przypadku gdy ilośc wystąpień najbardziej popularnych miast lub haseł jest większa niż podany argument ograniczający ich ilość, jaką formę sortowania zastosować.

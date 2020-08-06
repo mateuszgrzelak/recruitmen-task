@@ -1,7 +1,7 @@
 import click
-import PersonJsonToDBService
 import DBOperationsService
 import PersonRepository
+import os
 
 
 @click.command()
@@ -27,96 +27,127 @@ def hello(lru, gp, aa, mcc, mcp, ubbd, msp):
     '''
     My solution of the recruitment task.
     People data is taken from external api https://randomuser.me/.
-    First you need to create db using argument -ltdb [number of people taken].
-    Then you can perform the operations listed below. In folder where project is located data.db file will be created
+    First you need to create db using argument -lru [number of people taken]. As a result data.db file will be created
+    in project folder. Then you can perform the operations listed below.
     '''
     if lru is not None:
         load_random_users(lru)
-    if gp is not None:
+    elif gp is not None:
         gender_percentage(gp)
-    if aa is not None:
+    elif aa is not None:
         average_age(aa)
-    if mcc is not None:
+    elif mcc is not None:
         most_common_cities(mcc)
-    if mcp is not None:
+    elif mcp is not None:
         most_common_pass(mcp)
-    if len(ubbd) == 2:
+    elif len(ubbd) == 2:
         users_born_between_dates(ubbd[0], ubbd[1])
-    if msp:
+    elif msp:
         most_secure_pass()
 
 
 def load_random_users(number: int):
+    repository = PersonRepository.PersonRepository()
     if number < 0:
         print('Argument must be greater than 0')
         return
-    pjtdb = PersonJsonToDBService.PersonJsonToDBService()
-    pjtdb.convert_to_database(number)
+    repository.create_data(number)
     print('Converted data from .json to .db format.\nCreated '
           'tables with data about '+str(number)+' persons')
-
-
-repository = PersonRepository.PersonRepository()
-service = DBOperationsService.DBOperationsService(repository)
+    repository.close_connection()
 
 
 def gender_percentage(gender: str):
+    if not os.path.isfile('./data.db'):
+        print("Error: data.db file doesn't exist")
+        return
+    repository = PersonRepository.PersonRepository()
+    service = DBOperationsService.DBOperationsService(repository)
     if gender == 'male':
-        print('Percentage of men: '+str(service.percentage_men())+'%')
+        print('Percentage of men: '+str(round(service.percentage_men(), 1))+'%')
     elif gender == 'female':
-        print('Percentage of women: '+str(service.percentage_women())+'%')
-    service.close_connection()
+        print('Percentage of women: '+str(round(service.percentage_women(), 1))+'%')
+    repository.close_connection()
 
 
 def average_age(gender: str):
+    if not os.path.isfile('./data.db'):
+        print("Error: data.db file doesn't exist")
+        return
+    repository = PersonRepository.PersonRepository()
+    service = DBOperationsService.DBOperationsService(repository)
     if gender == 'male':
-        print('The average age of men: ' + str(service.average_age_male()))
+        print('The average age of men: ' + str(round(service.average_age_male(), 1)))
     elif gender == 'female':
-        print('The average age of women: ' + str(service.average_age_female()))
+        print('The average age of women: ' + str(round(service.average_age_female(), 1)))
     elif gender == 'all':
-        print('The average age of men and women: ' + str(service.average_age_all()))
-    service.close_connection()
+        print('The average age of men and women: ' + str(round(service.average_age_all(), 1)))
+    repository.close_connection()
 
 
 def most_common_cities(limit: int):
+    if not os.path.isfile('./data.db'):
+        print("Error: data.db file doesn't exist")
+        return
     if limit < 0:
         print('Argument must be greater than 0')
         return
-    print('n'+str(limit)+' most popular cities: \n')
+    repository = PersonRepository.PersonRepository()
+    service = DBOperationsService.DBOperationsService(repository)
+    print('\n'+str(limit)+' most popular cities: \n')
     print('NAME{:>16} OCCURRENCES'.format('|'))
     print('-'*32)
     for city, occurrence in service.most_common_cities(limit):
-        # print('City: ' + city+', occurrences: '+str(occurrence))
         print('{:19}| {:^11}'.format(city, str(occurrence)))
-    service.close_connection()
+    repository.close_connection()
 
 
 def most_common_pass(limit: int):
+    if not os.path.isfile('./data.db'):
+        print("Error: data.db file doesn't exist")
+        return
     if limit < 0:
         print('Argument must be greater than 0')
         return
-    print('n'+str(limit) + ' most popular passwords: \n')
+    repository = PersonRepository.PersonRepository()
+    service = DBOperationsService.DBOperationsService(repository)
+    print('\n'+str(limit) + ' most popular passwords: \n')
     print('PASSWORD{:>12} OCCURRENCES'.format('|'))
     print('-' * 32)
     for password, occurrence in service.most_common_passwords(limit):
         print('{:19}| {:^11}'.format(password, str(occurrence)))
-    service.close_connection()
+    repository.close_connection()
 
 
 def users_born_between_dates(d1: str, d2: str):
+    if not os.path.isfile('./data.db'):
+        print("Error: data.db file doesn't exist")
+        return
+    repository = PersonRepository.PersonRepository()
+    service = DBOperationsService.DBOperationsService(repository)
+    try:
+        users = service.users_born_between_dates(d1, d2)
+    except:
+        print("Error: Invalid date format")
+        return
     print('\nUsers born between '+d1+' and '+d2+':\n')
     print('USERNAME{:>16} DATE OF BIRTH'.format('|'))
     print('-' * 38)
-    for username, dob in service.users_born_between_dates(d1, d2):
+    for username, dob in users:
         print('{:23}| {:^13}'.format(username, dob[:10]))
-    service.close_connection()
+    repository.close_connection()
 
 
 def most_secure_pass():
+    if not os.path.isfile('./data.db'):
+        print("Error: data.db file doesn't exist")
+        return
+    repository = PersonRepository.PersonRepository()
+    service = DBOperationsService.DBOperationsService(repository)
     print('\nThe most secure passwords:\n')
     for password in service.most_secure_password():
         print(password)
-    service.close_connection()
+    repository.close_connection()
 
 
 if __name__ == '__main__':
