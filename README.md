@@ -72,10 +72,15 @@ Przed wywołaniem każdej komendy należy dodac na początku `py script.py`
 
 ## Testy
 
-W celu uruchomienia testów należy przejść w interpreterze poleceń do podkatalogu *test* i uruchomić komendę 
+W celu uruchomienia testów jednostkowych należy przejść w interpreterze poleceń do podkatalogu *test* i uruchomić komendę 
 ```
-py -m pytest
+py -m pytest test_unit_operations_db.py
 ```
+Aby uruchomić testy integracyjne należy w podkatalogu *test* uruchomić komendę
+```
+py -m pytest test_integration_operations_db.py
+```
+Testy te wykorzystują testową bazę danych o nazwie *data_test.db*
 
 ## Zalożenia
 
