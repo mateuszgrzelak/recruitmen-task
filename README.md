@@ -1,25 +1,25 @@
 # Recruitment-task
 
-Moje rozwiązanie zadania rekrutacyjnego na stanowisko stażysty Python Developer
+Moje rozwiązanie zadania rekrutacyjnego na stanowisko stażysty Python Developer.
 
 ## Instalacja
 
-Do uruchomienia programu należy wykorzystać zewnętrzne biblioteki [Click](https://click.palletsprojects.com/en/7.x/),  [requests](https://realpython.com/python-requests/) oraz do uruchomienia testów [pytest](https://docs.pytest.org/en/stable/getting-started.html). Metody ich instalacji znajdują się na oficjalnych stronach internetowych. W zależności od systemu operacyjnego, uruchamianie programów może zaczynać się od `py`, `python`, lub `python3`.
+Do uruchomienia programu należy wykorzystać zewnętrzne biblioteki [Click](https://click.palletsprojects.com/en/7.x/),  [requests](https://realpython.com/python-requests/) oraz do uruchomienia testów [pytest](https://docs.pytest.org/en/stable/getting-started.html). Metody ich instalacji znajdują się na oficjalnych stronach internetowych. W zależności od systemu operacyjnego, pisanie komend może zaczynać się od `py`, `python`, lub `python3`.
 
 ### Pobranie projektu
 
-Do pobrania tego repozytorium można wykorzystać komendę 
+Do pobrania tego repozytorium można wykorzystać komendę:
 ```
 git clone https://github.com/mateuszgrzelak/recruitment-task.git
 ```
 
 ### Uruchomienie 
 
-Aby skorzystać z komend dostępnych w programie nalezy w interpreterze poleceń przejść do pobranego projektu oraz utworzyć bazę danych za pomocą komendy `py script.py -ltdb [number]`, gdzie argument *number* odpowiada za ilość danych pobranych z API https://randomuser.me/. Po wykonaniu wyżej wymienionej komendy w folderze pojawi się plik o nazwie *data.db*, na którym można wykonać poniższe operacje.
+Aby skorzystać z komend dostępnych w programie nalezy w interpreterze poleceń przejść do pobranego projektu oraz utworzyć bazę danych za pomocą komendy `py script.py -lru [number]`, gdzie argument *number* odpowiada za ilość danych pobranych z API https://randomuser.me/. Po wykonaniu wyżej wymienionej komendy w folderze pojawi się plik o nazwie *data.db*, na którym można wykonać poniższe operacje.
 
 ## Dostępne komendy:
 
-Przed wywołaniem każdej komendy należy dodac na początku `py script.py`
+Przed wywołaniem każdej komendy należy dodać na początku `py script.py`.
 
 <table>
  <th>Komenda</th>
@@ -72,15 +72,15 @@ Przed wywołaniem każdej komendy należy dodac na początku `py script.py`
 
 ## Testy
 
-W celu uruchomienia testów jednostkowych należy przejść w interpreterze poleceń do podkatalogu *test* i uruchomić komendę 
+W celu uruchomienia testów jednostkowych należy przejść w interpreterze poleceń do podkatalogu *test* i uruchomić komendę: 
 ```
 py -m pytest test_unit_operations_db.py
 ```
-Aby uruchomić testy integracyjne należy w podkatalogu *test* uruchomić komendę
+Aby uruchomić testy integracyjne należy w podkatalogu *test* uruchomić komendę:
 ```
 py -m pytest test_integration_operations_db.py
 ```
-Testy te wykorzystują testową bazę danych o nazwie *data_test.db*
+Testy integracyjne wykorzystują testową bazę danych o nazwie *data_test.db*.
 
 ## Zalożenia
 
