@@ -1,4 +1,5 @@
 import sqlite3
+from PersonDataConverter import PersonDataConverter
 
 
 class PersonRepository:
@@ -7,23 +8,27 @@ class PersonRepository:
         self.__conn = sqlite3.connect(db_name)
         self.__cur = self.__conn.cursor()
 
-    def get_number_men_women(self) -> (int, int):
+    def create_data(self, number: int):
+        pdc = PersonDataConverter(self.__conn, self.__cur)
+        pdc.convert_to_database(number)
+
+    def get_number_men_women(self) -> tuple:
         self.__cur.execute('SELECT COUNT(*) FROM person WHERE gender="male"')
         number_men = self.__cur.fetchall()[0][0]
         self.__cur.execute('SELECT COUNT(*) FROM person WHERE gender="female"')
         number_women = self.__cur.fetchall()[0][0]
         return number_men, number_women
 
-    def get_average_age_all(self) -> int:
+    def get_average_age_all(self) -> float:
         self.__cur.execute('SELECT AVG(age) FROM personDOB')
         return self.__cur.fetchall()[0][0]
 
-    def get_average_age_male(self) -> int:
+    def get_average_age_male(self) -> float:
         self.__cur.execute('SELECT AVG(age) FROM personDOB,'
                            ' person WHERE person.gender="male" AND person.id=personDOB.id')
         return self.__cur.fetchall()[0][0]
 
-    def get_average_age_female(self) -> int:
+    def get_average_age_female(self) -> float:
         self.__cur.execute('SELECT AVG(age) FROM personDOB,'
                            ' person WHERE person.gender="female" AND person.id=personDOB.id')
         return self.__cur.fetchall()[0][0]
@@ -43,7 +48,7 @@ class PersonRepository:
                            " and personDOB.date <= '" + d2 + "'and personDOB.id = personLogin.id")
         return self.__cur.fetchall()
 
-    def get_all_passwords(self):
+    def get_all_passwords(self) -> list:
         self.__cur.execute('SELECT password FROM personLogin')
         return self.__cur.fetchall()
 
