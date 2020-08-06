@@ -59,7 +59,7 @@ def load_random_users(number: int):
 
 def gender_percentage(gender: str):
     if not os.path.isfile('./data.db'):
-        print("Error: data.db file doesn't exist")
+        print("Error: data.db file doesn't exist. Use --load-random-users [number] to create database.")
         return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
@@ -72,7 +72,7 @@ def gender_percentage(gender: str):
 
 def average_age(gender: str):
     if not os.path.isfile('./data.db'):
-        print("Error: data.db file doesn't exist")
+        print("Error: data.db file doesn't exist. Use --load-random-users [number] to create database.")
         return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
@@ -87,7 +87,7 @@ def average_age(gender: str):
 
 def most_common_cities(limit: int):
     if not os.path.isfile('./data.db'):
-        print("Error: data.db file doesn't exist")
+        print("Error: data.db file doesn't exist. Use --load-random-users [number] to create database.")
         return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
@@ -106,7 +106,7 @@ def most_common_cities(limit: int):
 
 def most_common_pass(limit: int):
     if not os.path.isfile('./data.db'):
-        print("Error: data.db file doesn't exist")
+        print("Error: data.db file doesn't exist. Use --load-random-users [number] to create database.")
         return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
@@ -125,7 +125,7 @@ def most_common_pass(limit: int):
 
 def users_born_between_dates(d1: str, d2: str):
     if not os.path.isfile('./data.db'):
-        print("Error: data.db file doesn't exist")
+        print("Error: data.db file doesn't exist. Use --load-random-users [number] to create database.")
         return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
@@ -144,7 +144,7 @@ def users_born_between_dates(d1: str, d2: str):
 
 def most_secure_pass():
     if not os.path.isfile('./data.db'):
-        print("Error: data.db file doesn't exist")
+        print("Error: data.db file doesn't exist. Use --load-random-users [number] to create database.")
         return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
