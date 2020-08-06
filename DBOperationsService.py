@@ -26,9 +26,13 @@ class DBOperationsService:
         return self.__repository.get_average_age_female()
 
     def most_common_cities(self, limit: int) -> list:
+        if limit <= 0:
+            raise Exception('Limit must be grater than 0')
         return self.__repository.get_most_common_cities(limit)
 
     def most_common_passwords(self, limit: int) -> list:
+        if limit <= 0:
+            raise Exception('Limit must be grater than 0')
         return self.__repository.get_most_common_passwords(limit)
 
     def __replace_dates_if_in_wrong_order(self, d1: str, d2: str) -> tuple:
@@ -79,7 +83,7 @@ class DBOperationsService:
             points += 5
         return points
 
-    def most_secure_password(self) -> list:
+    def most_secure_passwords(self) -> list:
         result = self.__repository.get_all_passwords()
         max_points = 0
         most_secure_passwords = []

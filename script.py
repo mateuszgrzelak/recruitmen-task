@@ -89,15 +89,17 @@ def most_common_cities(limit: int):
     if not os.path.isfile('./data.db'):
         print("Error: data.db file doesn't exist")
         return
-    if limit < 0:
-        print('Argument must be greater than 0')
-        return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
+    try:
+        cities = service.most_common_cities(limit)
+    except:
+        print("Error: argument must be greater than 0.")
+        return
     print('\n'+str(limit)+' most popular cities: \n')
     print('NAME{:>16} OCCURRENCES'.format('|'))
     print('-'*32)
-    for city, occurrence in service.most_common_cities(limit):
+    for city, occurrence in cities:
         print('{:19}| {:^11}'.format(city, str(occurrence)))
     repository.close_connection()
 
@@ -106,15 +108,17 @@ def most_common_pass(limit: int):
     if not os.path.isfile('./data.db'):
         print("Error: data.db file doesn't exist")
         return
-    if limit < 0:
-        print('Argument must be greater than 0')
-        return
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
+    try:
+        passwords = service.most_common_passwords(limit)
+    except:
+        print("Error: argument must be greater than 0.")
+        return
     print('\n'+str(limit) + ' most popular passwords: \n')
     print('PASSWORD{:>12} OCCURRENCES'.format('|'))
     print('-' * 32)
-    for password, occurrence in service.most_common_passwords(limit):
+    for password, occurrence in passwords:
         print('{:19}| {:^11}'.format(password, str(occurrence)))
     repository.close_connection()
 
@@ -145,7 +149,7 @@ def most_secure_pass():
     repository = PersonRepository.PersonRepository()
     service = DBOperationsService.DBOperationsService(repository)
     print('\nThe most secure passwords:\n')
-    for password in service.most_secure_password():
+    for password in service.most_secure_passwords():
         print(password)
     repository.close_connection()
 
